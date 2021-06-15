@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 2),
+    "version": (0, 3),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -12,6 +12,22 @@ bl_info = {
 
 import bpy, textwrap
 from bpy.types import NodeTree, Node, NodeSocket
+
+class MindMapperPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    ShowInNode: bpy.props.BoolProperty(
+        name='Show Text and Color Shortcuts in the Node (they remain in the properties panel)',
+        default=True
+    )
+
+    def draw(self, context):    
+        layout = self.layout
+        box = layout.box()
+        column = box.column()
+        row = column.row()
+        row.prop(self, 'ShowInNode')
+
 
 # Mindmap-style custom Node editor
 # Derived from the NodeTree base type, similar to Menu, Operator, Panel, etc.
@@ -48,7 +64,7 @@ class MindmapNode(Node, MindmapTreeNode):
     
     # === Custom Properties ===
     my_string_prop: bpy.props.StringProperty(
-        name= 'Text',
+        name= '',
         default= 'Once upon a time, a long line of text was divided into many smaller lines, the people rejoiced, and all was well in the land of Blender...'
     )
 
@@ -79,10 +95,17 @@ class MindmapNode(Node, MindmapTreeNode):
 
     # Additional buttons displayed on the node.
     def draw_buttons(self, context, layout):
-        layout.prop(self, "my_string_prop")
-        layout.prop(self, "color")
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__name__].preferences
 
-        layout.separator(factor=1)
+        if addon_prefs.ShowInNode:
+            box = layout.box()
+            row = box.row()
+            row.prop(self, "my_string_prop")
+            row.prop(self, "color", text='')
+            #row.operator("image.open")
+
+            layout.separator(factor=1)
 
         text = self.my_string_prop
         chars = int(self.width / 6)
@@ -132,6 +155,7 @@ node_categories = [
 classes = (
     MindmapTree,
     MindmapNode,
+    MindMapperPreferences,
 )
 
 

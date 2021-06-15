@@ -74,6 +74,7 @@ class MindmapNode(Node, MindmapTreeNode):
         subtype='COLOR',
     )
 
+
     # === Optional Functions ===
     # Initialization function, called when a new node is created.
     def init(self, context):
@@ -101,11 +102,11 @@ class MindmapNode(Node, MindmapTreeNode):
         if addon_prefs.ShowInNode:
             box = layout.box()
             row = box.row()
-            row.prop(self, "my_string_prop")
-            row.prop(self, "color", text='')
+            row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+            row.prop(self, "color", text='', icon='MATERIAL')
             #row.operator("image.open")
 
-            layout.separator(factor=1)
+            layout.separator(factor=2)
 
         text = self.my_string_prop
         chars = int(self.width / 6)

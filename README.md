@@ -6,7 +6,7 @@ Node-based text flowchart for Blender
 ## Notes
 This was requested by Tobias on RightClickSelect, and made possible by a blog post from Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ on how to extend Blender's Panels to display multiline text strings.
 
-This addon gives you a custom Node Editor (just like the Shader Node Editor, or the Geometry Node Editor), which will appear in the Workspace menu after you install it.
+This addon gives you a custom Node Editor (just like the Shader Node Editor, or the Geometry Node Editor), which will appear in the Editor Type menu after install.
 
 First, click 'New' to create a new node tree, then, click 'Add' > 'Mindmap' to add a new node. You can change the text and the background color of the node, as well as connect it to one or more other nodes to create a flowchart.
 

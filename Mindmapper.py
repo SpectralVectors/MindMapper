@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 1),
+    "version": (0, 2),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -81,6 +81,8 @@ class MindmapNode(Node, MindmapTreeNode):
     def draw_buttons(self, context, layout):
         layout.prop(self, "my_string_prop")
         layout.prop(self, "color")
+
+        layout.separator(factor=1)
 
         text = self.my_string_prop
         chars = int(self.width / 6)

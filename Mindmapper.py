@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 3),
+    "version": (0, 4),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -17,8 +17,17 @@ class MindMapperPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
 
     ShowInNode: bpy.props.BoolProperty(
-        name='Show Text and Color Shortcuts in the Node (they remain in the properties panel)',
-        default=True
+        name='Show Text, Color Shortcuts in Node',
+        description='They will remain visible in the Node properties panel.',
+        default=True,
+    )
+
+    WrapAmount: bpy.props.IntProperty(
+        name='Text Wrap Amount',
+        description='Bigger numbers means shorter lines',
+        default=6,
+        soft_max=10,
+        soft_min=1,
     )
 
     def draw(self, context):    
@@ -27,6 +36,7 @@ class MindMapperPreferences(bpy.types.AddonPreferences):
         column = box.column()
         row = column.row()
         row.prop(self, 'ShowInNode')
+        row.prop(self, 'WrapAmount')
 
 
 # Mindmap-style custom Node editor
@@ -65,13 +75,25 @@ class MindmapNode(Node, MindmapTreeNode):
     # === Custom Properties ===
     my_string_prop: bpy.props.StringProperty(
         name= '',
-        default= 'Once upon a time, a long line of text was divided into many smaller lines, the people rejoiced, and all was well in the land of Blender...'
+        default= 'Once upon a time, a long line of text was divided into many smaller lines, the people rejoiced, and all was well in the land of Blender...',
     )
 
     my_node_color: bpy.props.FloatVectorProperty(
         name='',
         default=(0,0,0.1),
         subtype='COLOR',
+    )
+
+    my_text_size: bpy.props.IntProperty(
+        name='Text Size',
+        default=12,
+        soft_min=8,
+        soft_max=64,
+    )
+
+    show_in_single_node: bpy.props.BoolProperty(
+        name='Show Shortcuts in Node',
+        default=True,
     )
 
 
@@ -100,27 +122,32 @@ class MindmapNode(Node, MindmapTreeNode):
         addon_prefs = preferences.addons[__name__].preferences
 
         if addon_prefs.ShowInNode:
-            box = layout.box()
-            row = box.row()
-            row.prop(self, "my_string_prop", icon='GREASEPENCIL')
-            row.prop(self, "color", text='', icon='MATERIAL')
-            #row.operator("image.open")
+            if self.show_in_single_node:
+                box = layout.box()
+                row = box.row()
+                row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+                row.prop(self, "color", text='', icon='MATERIAL')
+                #row.operator("image.open")
 
-            layout.separator(factor=2)
+                layout.separator(factor=2)
+
 
         text = self.my_string_prop
-        chars = int(self.width / 6)
+        chars = int(self.width / addon_prefs.WrapAmount)
         wrapper = textwrap.TextWrapper(width=chars)
         text_lines = wrapper.wrap(text=text)
         box = layout.box()
         for text_line in text_lines:
             box.label(text=text_line)
+    
 
 
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
         layout.prop(self, "my_string_prop")
+        layout.prop(self, "show_in_single_node")
+        #layout.prop(self, "my_text_size")
 
     # Optional: custom label
     # Explicit user label overrides this, but here we can define a label dynamically

@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 5),
+    "version": (0, 6),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -79,6 +79,11 @@ class MindmapNode(Node, MindmapTreeNode):
         default= 'Once upon a time, a long line of text was divided into many smaller lines, the people rejoiced, and all was well in the land of Blender...',
     )
 
+    my_title_prop: bpy.props.StringProperty(
+        name= '',
+        default= 'Mindmap'
+    )
+
     my_node_color: bpy.props.FloatVectorProperty(
         name='',
         default=(0,0,0.1),
@@ -99,22 +104,22 @@ class MindmapNode(Node, MindmapTreeNode):
 
     node_image : bpy.props.StringProperty(
         name = "",
-        description = "Filepath of the Node's image.",
+        description = "Filename of the Node's image.",
         default = "",
-        subtype = 'FILE_PATH'
+        subtype = 'FILE_NAME'
     )
 
 
     # === Optional Functions ===
     # Initialization function, called when a new node is created.
     def init(self, context):
-        self.inputs.new('NodeSocketShader', "")
-        self.outputs.new('NodeSocketShader', "")
-
         self.use_custom_color = True
         self.color = self.my_node_color
         self.width = 250
-
+        
+        self.inputs.new('NodeSocketShader', "")
+        
+        self.outputs.new('NodeSocketShader', "")
 
     # Copy function to initialize a copied node from an existing one.
     def copy(self, node):
@@ -131,20 +136,26 @@ class MindmapNode(Node, MindmapTreeNode):
 
         if addon_prefs.ShowInNode:
             if self.show_in_single_node:
+
                 box = layout.box()
+
+                row = box.row()
+                row.prop(self, "my_title_prop", icon='GREASEPENCIL')
+                row.prop(self, "color", text='', icon='MATERIAL')
+
                 row = box.row()
                 row.prop_search(self, 'node_image',  bpy.data, 'images')
                 row.operator('image.open')
+
                 row = box.row()
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
-                row.prop(self, "color", text='', icon='MATERIAL')
+                
 
                 layout.separator(factor=2)
 
-
         text = self.my_string_prop
-        chars = int(self.width / addon_prefs.WrapAmount)
-        wrapper = textwrap.TextWrapper(width=chars)
+        characters = int(self.width / addon_prefs.WrapAmount)
+        wrapper = textwrap.TextWrapper(width=characters)
         text_lines = wrapper.wrap(text=text)
         box = layout.box()
 
@@ -155,22 +166,23 @@ class MindmapNode(Node, MindmapTreeNode):
         for text_line in text_lines:
             box.label(text=text_line)
     
-
-
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
-        layout.prop_search(self, 'node_image',  bpy.data, 'images')
-        layout.operator('image.open')
-        layout.prop(self, "my_string_prop")
+        row = layout.row()
+        row.prop(self, "my_title_prop", icon='GREASEPENCIL')
+        row = layout.row()
+        row.prop_search(self, 'node_image',  bpy.data, 'images')
+        row.operator('image.open')
+        row = layout.row()
+        row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+        
         layout.prop(self, "show_in_single_node")
-        #layout.prop(self, "my_text_size")
 
     # Optional: custom label
     # Explicit user label overrides this, but here we can define a label dynamically
     def draw_label(self):
-        return "Mindmap"
-
+        return self.my_title_prop
 
 ### Node Categories ###
 # Node categories are a python system for automatically

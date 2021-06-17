@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 6, 1),
+    "version": (0, 6, 2),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -137,17 +137,17 @@ class MindmapNode(Node, MindmapTreeNode):
         if addon_prefs.ShowInNode:
             if self.show_in_single_node:
 
-                box = layout.box()
-
-                row = box.row()
+                column = layout.column(align=True)
+                row = column.row(align=True)
                 row.prop(self, "my_title_prop", icon='GREASEPENCIL')
+
                 row.prop(self, "color", text='', icon='MATERIAL')
 
-                row = box.row(align=True)
+                row = column.row(align=True)
                 row.prop_search(self, 'node_image',  bpy.data, 'images')
                 row.operator('image.open')
 
-                row = box.row()
+                row = column.row(align=True)
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
                 
 

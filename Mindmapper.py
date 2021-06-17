@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 4),
+    "version": (0, 5),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -12,19 +12,20 @@ bl_info = {
 
 import bpy, textwrap
 from bpy.types import NodeTree, Node, NodeSocket
+from bpy_extras.io_utils import ImportHelper
 
 class MindMapperPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
 
     ShowInNode: bpy.props.BoolProperty(
-        name='Show Text, Color Shortcuts in Node',
+        name='Show Shortcuts in Node (Global)',
         description='They will remain visible in the Node properties panel.',
         default=True,
     )
 
     WrapAmount: bpy.props.IntProperty(
         name='Text Wrap Amount',
-        description='Bigger numbers means shorter lines',
+        description='Bigger numbers mean shorter lines',
         default=6,
         soft_max=10,
         soft_min=1,
@@ -92,8 +93,15 @@ class MindmapNode(Node, MindmapTreeNode):
     )
 
     show_in_single_node: bpy.props.BoolProperty(
-        name='Show Shortcuts in Node',
+        name='Show Shortcuts in Node (single)',
         default=True,
+    )
+
+    node_image : bpy.props.StringProperty(
+        name = "",
+        description = "Filepath of the Node's image.",
+        default = "",
+        subtype = 'FILE_PATH'
     )
 
 
@@ -125,9 +133,11 @@ class MindmapNode(Node, MindmapTreeNode):
             if self.show_in_single_node:
                 box = layout.box()
                 row = box.row()
+                row.prop_search(self, 'node_image',  bpy.data, 'images')
+                row.operator('image.open')
+                row = box.row()
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
                 row.prop(self, "color", text='', icon='MATERIAL')
-                #row.operator("image.open")
 
                 layout.separator(factor=2)
 
@@ -137,6 +147,11 @@ class MindmapNode(Node, MindmapTreeNode):
         wrapper = textwrap.TextWrapper(width=chars)
         text_lines = wrapper.wrap(text=text)
         box = layout.box()
+
+        if self.node_image:
+            nodeimage = bpy.path.basename(self.node_image)
+            box.template_icon(icon_value=bpy.data.images[nodeimage].preview.icon_id, scale=self.width / (addon_prefs.WrapAmount * 4) )
+
         for text_line in text_lines:
             box.label(text=text_line)
     
@@ -145,6 +160,8 @@ class MindmapNode(Node, MindmapTreeNode):
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
+        layout.prop_search(self, 'node_image',  bpy.data, 'images')
+        layout.operator('image.open')
         layout.prop(self, "my_string_prop")
         layout.prop(self, "show_in_single_node")
         #layout.prop(self, "my_text_size")

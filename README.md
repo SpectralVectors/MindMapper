@@ -1,7 +1,10 @@
 # MindMapper
 Node-based text flowchart for Blender
 
+Mindmap with shortcuts visible:
 ![screenshot](/Mindmap.png)
+Mindmap with shortcuts hidden:
+![screenshot](/MindmapTidy.png)
 
 ## Notes
 This was requested by Tobias on RightClickSelect, and made possible by a blog post from Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ on how to extend Blender's Panels to display multiline text strings.

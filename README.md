@@ -7,7 +7,7 @@ Mindmap with shortcuts hidden:
 ![screenshot](/MindmapTidy.png)
 
 ## Notes
-This was requested by Tobias on RightClickSelect, and made possible by a blog post from Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ on how to extend Blender's Panels to display multiline text strings.
+This was requested by Tobias on RightClickSelect, and made possible by a blog post from Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ on how to extend Blender's Panels to display multiline text strings. Thanks also to tin2tin for suggesting some layout improvements!
 
 This addon gives you a custom Node Editor (just like the Shader Node Editor, or the Geometry Node Editor), which will appear in the Editor Type menu after install.
 

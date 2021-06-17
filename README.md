@@ -1,5 +1,5 @@
 # MindMapper
-Node-based text flowchart for Blender
+Node-based text and image flowchart for Blender
 
 Mindmap with shortcuts visible:
 ![screenshot](/Mindmap.png)
@@ -19,4 +19,6 @@ The complete text will display on the node, but in order to edit it, you must cl
 
 Line breaks are not supported, but you can paste complete paragraphs. Since they are being pasted into a small text box, it may be easier to write them in the Text Editor, then paste them in the Node Properties after you've written and edited them.
 
-There is not currently support for Reroute nodes, multiple inputs, embedding images etc. This was a bit of a spur of the moment code, if you want more features then you can fork and extend it, I'm not sure when I'll be updating it.
+Image support comes through Blender's auto-generated thumbnail previews, so images are low-res, but load quickly, and require no additional processing.
+
+There is not currently support for Reroute nodes, multiple inputs, etc. This was a bit of a spur of the moment code, if you want more features then you can fork and extend it, I'm not sure when I'll be updating it.

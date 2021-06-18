@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 6, 2),
+    "version": (0, 7),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -10,7 +10,7 @@ bl_info = {
     "category": "Custom Nodes",
 }
 
-import bpy, textwrap
+import bpy, textwrap, time
 from bpy.types import NodeTree, Node, NodeSocket
 from bpy_extras.io_utils import ImportHelper
 
@@ -52,6 +52,22 @@ class MindmapTree(NodeTree):
     # Icon identifier
     bl_icon = 'NODETREE'
 
+# Custom socket type
+class MindmapNodeSocket(NodeSocket):
+    # Description string
+    '''Custom node socket type'''
+    # Optional identifier string. If not explicitly defined, the python class name is used.
+    bl_idname = 'MindmapNodeSocketType'
+    # Label for nice name display
+    bl_label = "Mindmap Node Socket"
+
+    def draw(self, context, layout, node, text):
+        layout.label(text=text)
+        
+    # Socket color
+    def draw_color(self, context, node):
+        return (0.0, 1.0, 0.0, 1)
+
 
 # Mix-in class for all custom nodes in this tree type.
 # Defines a poll function to enable instantiation.
@@ -59,6 +75,23 @@ class MindmapTreeNode:
     @classmethod
     def poll(cls, ntree):
         return ntree.bl_idname == 'MindmapTreeType'
+
+class UpdateNodes(bpy.types.Operator):
+    bl_idname = 'node.update_nodes'
+    bl_label = 'Update Node Sockets'
+
+    @classmethod
+    def poll(cls, ntree):
+        return ntree.bl_idname == 'MindmapTreeType'
+
+    def execute(self, context):
+        bpy.ops.node.add_node(type='MindmapNodeType')
+        bpy.ops.node.delete()
+        bpy.ops.node.add_node(type='MindmapNodeType')
+        bpy.ops.node.delete()
+        bpy.ops.node.add_node(type='MindmapNodeType')
+        bpy.ops.node.delete()
+        return {'FINISHED'}
 
 
 # Derived from the Node base type.
@@ -109,6 +142,23 @@ class MindmapNode(Node, MindmapTreeNode):
         subtype = 'FILE_NAME'
     )
 
+    node_inputs : bpy.props.IntProperty(
+        name="Inputs",
+        description="Number of Inputs on the Node",
+        default=1,
+        min=1,
+        max=20,
+
+    )
+
+    node_outputs : bpy.props.IntProperty(
+        name="Outputs",
+        description="Number of Outputs on the Node",
+        default=1,
+        min=1,
+        max=20,
+
+    )    
 
     # === Optional Functions ===
     # Initialization function, called when a new node is created.
@@ -117,9 +167,14 @@ class MindmapNode(Node, MindmapTreeNode):
         self.color = self.my_node_color
         self.width = 250
         
-        self.inputs.new('NodeSocketShader', "")
-        
-        self.outputs.new('NodeSocketShader', "")
+        for i in range(self.node_inputs):
+            i = self.inputs.new('MindmapNodeSocketType', name='1')
+            i.display_shape = 'SQUARE_DOT'
+
+        for j in range(self.node_outputs):
+            j = self.outputs.new('MindmapNodeSocketType', name='1')
+            j.display_shape = 'SQUARE_DOT'
+
 
     # Copy function to initialize a copied node from an existing one.
     def copy(self, node):
@@ -133,6 +188,21 @@ class MindmapNode(Node, MindmapTreeNode):
     def draw_buttons(self, context, layout):
         preferences = context.preferences
         addon_prefs = preferences.addons[__name__].preferences
+
+        text = self.my_string_prop
+        characters = int(self.width / addon_prefs.WrapAmount)
+        wrapper = textwrap.TextWrapper(width=characters)
+        text_lines = wrapper.wrap(text=text)
+        box = layout.box()
+
+        if self.node_image:
+            nodeimage = bpy.path.basename(self.node_image)
+            box.template_icon(icon_value=bpy.data.images[nodeimage].preview.icon_id, scale=self.width / (addon_prefs.WrapAmount * 4) )
+
+        for text_line in text_lines:
+            box.label(text=text_line)
+
+        layout.separator(factor=2)
 
         if addon_prefs.ShowInNode:
             if self.show_in_single_node:
@@ -149,22 +219,6 @@ class MindmapNode(Node, MindmapTreeNode):
 
                 row = column.row(align=True)
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
-                
-
-                layout.separator(factor=2)
-
-        text = self.my_string_prop
-        characters = int(self.width / addon_prefs.WrapAmount)
-        wrapper = textwrap.TextWrapper(width=characters)
-        text_lines = wrapper.wrap(text=text)
-        box = layout.box()
-
-        if self.node_image:
-            nodeimage = bpy.path.basename(self.node_image)
-            box.template_icon(icon_value=bpy.data.images[nodeimage].preview.icon_id, scale=self.width / (addon_prefs.WrapAmount * 4) )
-
-        for text_line in text_lines:
-            box.label(text=text_line)
     
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
@@ -176,13 +230,42 @@ class MindmapNode(Node, MindmapTreeNode):
         row.operator('image.open')
         row = layout.row()
         row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+        row = layout.row()
+        row.prop(self, "node_inputs")
+        row.prop(self, "node_outputs")
         
+        layout.operator('node.update_nodes')
         layout.prop(self, "show_in_single_node")
 
     # Optional: custom label
     # Explicit user label overrides this, but here we can define a label dynamically
     def draw_label(self):
         return self.my_title_prop
+
+    def update(self):
+        if len(self.inputs) < self.node_inputs:
+            for i in range(self.node_inputs):
+                if i > 0:
+                    i = self.inputs.new('MindmapNodeSocketType', name=str(i + 1))
+                    i.display_shape = 'SQUARE_DOT'
+
+        if len(self.inputs) > self.node_inputs:
+            inputs = reversed(self.inputs)
+            for input in inputs:
+                while len(self.inputs) > self.node_inputs:
+                    self.inputs.remove(input)
+
+        if len(self.outputs) < self.node_outputs:
+            for j in range(self.node_outputs):
+                if j > 0:
+                    j = self.outputs.new('MindmapNodeSocketType', name=str(j + 1))
+                    j.display_shape = 'SQUARE_DOT' 
+
+        if len(self.outputs) > self.node_outputs:
+            outputs = reversed(self.outputs)
+            for output in outputs:
+                while len(self.outputs) > self.node_outputs:
+                    self.outputs.remove(output)
 
 ### Node Categories ###
 # Node categories are a python system for automatically
@@ -213,6 +296,8 @@ classes = (
     MindmapTree,
     MindmapNode,
     MindMapperPreferences,
+    MindmapNodeSocket,
+    UpdateNodes,
 )
 
 

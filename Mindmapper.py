@@ -138,7 +138,7 @@ class MindmapNode(Node, MindmapTreeNode):
     node_image : bpy.props.StringProperty(
         name = "",
         description = "Filename of the Node's image.",
-        default = "",
+        default = "Render Result",
         subtype = 'FILE_NAME'
     )
 

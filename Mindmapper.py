@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 7, 1),
+    "version": (0, 7, 2),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -10,9 +10,8 @@ bl_info = {
     "category": "Custom Nodes",
 }
 
-import bpy, textwrap, time
+import bpy, textwrap
 from bpy.types import NodeTree, Node, NodeSocket
-from bpy_extras.io_utils import ImportHelper
 
 class MindMapperPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
@@ -79,18 +78,21 @@ class MindmapTreeNode:
 class UpdateNodes(bpy.types.Operator):
     bl_idname = 'node.update_nodes'
     bl_label = 'Update Node Sockets'
+    bl_description = 'Updates to Node to show the correct number of Input/Output sockets'
 
     @classmethod
     def poll(cls, ntree):
         return ntree.bl_idname == 'MindmapTreeType'
 
     def execute(self, context):
+        #my_node = bpy.context.active_node
         bpy.ops.node.add_node(type='MindmapNodeType')
         bpy.ops.node.delete()
         bpy.ops.node.add_node(type='MindmapNodeType')
         bpy.ops.node.delete()
         bpy.ops.node.add_node(type='MindmapNodeType')
         bpy.ops.node.delete()
+        #bpy.context.active_node = my_node
         return {'FINISHED'}
 
 
@@ -159,11 +161,6 @@ class MindmapNode(Node, MindmapTreeNode):
         max=20,
 
     )    
-
-    node_input_name : bpy.props.StringProperty(
-        description = "Name of the Node's input.",
-        default = "Input",
-    )
 
     # === Optional Functions ===
     # Initialization function, called when a new node is created.
@@ -238,20 +235,24 @@ class MindmapNode(Node, MindmapTreeNode):
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
-        row = layout.row()
+        column = layout.column(align=True)
+        row = column.row()
         row.prop(self, "my_title_prop", icon='GREASEPENCIL')
 
-        row = layout.row(align=True)
+        row = column.row(align=True)
         row.prop_search(self, 'node_image',  bpy.data, 'images')
         row.operator('image.open')
         
-        row = layout.row()
+        row = column.row()
         row.prop(self, "my_string_prop", icon='GREASEPENCIL')
-        row = layout.row()
+
+        row = column.row(align=True)
         row.prop(self, "node_inputs")
         row.prop(self, "node_outputs")
-        
-        layout.operator('node.update_nodes')
+
+        row = column.row()
+        row.operator('node.update_nodes')
+
         layout.prop(self, "show_in_single_node")
 
         #for i in range(self.node_inputs):

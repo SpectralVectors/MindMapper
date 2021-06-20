@@ -21,4 +21,4 @@ Line breaks are not supported, but you can paste complete paragraphs. Since they
 
 Image support comes through Blender's auto-generated thumbnail previews, so images are low-res, but load quickly, and require no additional processing.
 
-There is not currently support for Reroute nodes, renaming sockets, etc. This was a bit of a spur of the moment code, if you want more features then you can fork and extend it, I'm not sure when I'll be updating it. (he says, before committing 30 times)
+There is not currently support for renaming sockets, importing/exporting text etc.

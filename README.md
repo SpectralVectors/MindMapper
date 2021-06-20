@@ -15,7 +15,7 @@ First, click 'New' to create a new node tree, then, click 'Add' > 'Mindmap' to a
 
 It works by displaying a String Property as multiple Label strings, separated by number of characters.
 
-The complete text will display on the node, but in order to edit it, you must click in the box with the __Pencil Icon__ at the top of the node, then you can type or paste any text you like.
+The complete text will display on the node, but in order to edit it, you must click in the box with the __Pencil Icon__ at the bottom of the node, then you can type or paste any text you like. The top box is for the node label, the next row sets the picture, the next box sets the text for the body of the note, then the last are the controls to add/remove sockets.
 
 Line breaks are not supported, but you can paste complete paragraphs. Since they are being pasted into a small text box, it may be easier to write them in the Text Editor, then paste them in the Node Properties after you've written and edited them.
 

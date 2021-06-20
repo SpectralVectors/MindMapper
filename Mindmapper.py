@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 7, 2),
+    "version": (0, 8),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -11,7 +11,7 @@ bl_info = {
 }
 
 import bpy, textwrap
-from bpy.types import NodeTree, Node, NodeSocket
+from bpy.types import NodeTree, Node, NodeSocket, NodeReroute, NodeFrame
 
 class MindMapperPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
@@ -215,7 +215,6 @@ class MindmapNode(Node, MindmapTreeNode):
                 column = layout.column(align=True)
                 row = column.row(align=True)
                 row.prop(self, "my_title_prop", icon='GREASEPENCIL')
-
                 row.prop(self, "color", text='', icon='MATERIAL')
 
                 row = column.row(align=True)
@@ -312,6 +311,8 @@ node_categories = [
     MyNodeCategory('MINDMAPNODES', "Mindmapper", items=[
         # our basic node
         NodeItem("MindmapNodeType"),
+        NodeItem("NodeReroute"),
+        NodeItem("NodeFrame"),
     ]),
 ]
 

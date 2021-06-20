@@ -1,4 +1,4 @@
-# MindMapper
+# MindMapper v0.8
 Node-based text and image flowchart for Blender
 
 Mindmap with shortcuts visible:

@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 8),
+    "version": (0, 8, 3),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -79,10 +79,6 @@ class UpdateNodes(bpy.types.Operator):
     bl_idname = 'node.update_nodes'
     bl_label = 'Update Node Sockets'
     bl_description = 'Updates to Node to show the correct number of Input/Output sockets'
-
-    @classmethod
-    def poll(cls, ntree):
-        return ntree.bl_idname == 'MindmapTreeType'
 
     def execute(self, context):
         #my_node = bpy.context.active_node
@@ -201,8 +197,9 @@ class MindmapNode(Node, MindmapTreeNode):
         box = layout.box()
 
         if self.node_image:
-            nodeimage = bpy.path.basename(self.node_image)
-            box.template_icon(icon_value=bpy.data.images[nodeimage].preview.icon_id, scale=self.width / (addon_prefs.WrapAmount * 4) )
+            #nodeimage = bpy.path.basename(self.node_image)
+            #bpy.data.images[self.node_image].use_fake_user = True
+            box.template_icon(icon_value=bpy.data.images[self.node_image].preview.icon_id, scale=self.width / (addon_prefs.WrapAmount * 4) )
 
         for text_line in text_lines:
             box.label(text=text_line)
@@ -263,6 +260,10 @@ class MindmapNode(Node, MindmapTreeNode):
         return self.my_title_prop
 
     def update(self):
+
+        if self.node_image:
+            bpy.data.images[self.node_image].use_fake_user = True
+
         if len(self.inputs) < self.node_inputs:
             for i in range(self.node_inputs):
                 if i > 0:

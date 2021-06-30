@@ -14,7 +14,7 @@ import bpy, textwrap
 from bpy.types import NodeTree, Node, NodeSocket, NodeReroute, NodeFrame
 
 class MindMapperPreferences(bpy.types.AddonPreferences):
-    bl_idname = __package__
+    bl_idname = __Mindmapper__
 
     ShowInNode: bpy.props.BoolProperty(
         name='Show Shortcuts in Node (Global)',

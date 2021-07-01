@@ -1,7 +1,7 @@
 bl_info = {
-    "name": "Mindmapper",
+    "name": "Mind Mapper",
     "author": "Spectral Vectors",
-    "version": (0, 8, 4),
+    "version": (0, 8, 3),
     "blender": (2, 90, 0),
     "location": "Mind Mapper - Custom Node Editor",
     "description": "A custom, node based flow chart for text",
@@ -14,7 +14,7 @@ import bpy, textwrap
 from bpy.types import NodeTree, Node, NodeSocket, NodeReroute, NodeFrame
 
 class MindMapperPreferences(bpy.types.AddonPreferences):
-    bl_idname = __package__
+    bl_idname = __name__
 
     ShowInNode: bpy.props.BoolProperty(
         name='Show Shortcuts in Node (Global)',
@@ -316,3 +316,31 @@ node_categories = [
         NodeItem("NodeFrame"),
     ]),
 ]
+
+classes = (
+    MindmapTree,
+    MindmapNode,
+    MindMapperPreferences,
+    MindmapNodeSocket,
+    UpdateNodes,
+)
+
+
+def register():
+    from bpy.utils import register_class
+    for cls in classes:
+        register_class(cls)
+
+    nodeitems_utils.register_node_categories('Mindmap', node_categories)
+
+
+def unregister():
+    nodeitems_utils.unregister_node_categories('Mindmap')
+
+    from bpy.utils import unregister_class
+    for cls in reversed(classes):
+        unregister_class(cls)
+
+
+if __name__ == "__main__":
+    register()

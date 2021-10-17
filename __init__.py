@@ -169,12 +169,14 @@ class MindmapNode(Node, MindmapTreeNode):
             self.node_input_name = '1'
             i = self.inputs.new('MindmapNodeSocketType', name=self.node_input_name)
             i.display_shape = 'SQUARE_DOT'
+            i.link_limit = 0 # enables multi input on a single socket
             #i.type = 'STRING'
 
         for j in range(self.node_outputs):
             self.node_output_name = '1'
             j = self.outputs.new('MindmapNodeSocketType', name=self.node_output_name)
             j.display_shape = 'SQUARE_DOT'
+            j.link_limit = 0 # enables multi output from a single socket
             #j.type = 'STRING'
 
     # Copy function to initialize a copied node from an existing one.

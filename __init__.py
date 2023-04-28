@@ -65,8 +65,7 @@ class MindmapNodeSocket(NodeSocket):
         
     # Socket color
     def draw_color(self, context, node):
-        return (0.0, 1.0, 0.0, 1)
-
+        return (0.1, 0.3, 0.1, 1)
 
 # Mix-in class for all custom nodes in this tree type.
 # Defines a poll function to enable instantiation.
@@ -90,6 +89,16 @@ class UpdateNodes(bpy.types.Operator):
         bpy.ops.node.delete()
         #bpy.context.active_node = my_node
         return {'FINISHED'}
+
+
+def label_multiline(context, text, wrap_width, parent):
+    chars = int(context.region.width / 7)
+    print(chars)
+    chars = int(wrap_width)
+    print(chars)
+    wrapper = textwrap.TextWrapper(width=chars)
+    text_lines = [wrapped_line for line in text.splitlines() for wrapped_line in wrapper.wrap(text=line)]
+    [parent.label(text=text_line) for text_line in text_lines]
 
 
 # Derived from the Node base type.
@@ -192,11 +201,20 @@ class MindmapNode(Node, MindmapTreeNode):
         preferences = context.preferences
         addon_prefs = preferences.addons[__name__].preferences
 
-        text = self.my_string_prop
+        # Get the width and create a text wrapper
         characters = int(self.width / addon_prefs.WrapAmount)
         wrapper = textwrap.TextWrapper(width=characters)
-        text_lines = wrapper.wrap(text=text)
+
+        text = self.my_string_prop
+        lines = text.split("\n")
+        text_lines = []
+
+        # Wrap each line separately
+        for line in lines:
+            text_lines += wrapper.wrap(text=line)
+
         box = layout.box()
+        box = box.column(align=True)
 
         if self.node_image:
             #nodeimage = bpy.path.basename(self.node_image)
@@ -229,11 +247,12 @@ class MindmapNode(Node, MindmapTreeNode):
 
                 row = column.row(align=True)
                 row.operator('node.update_nodes')
-    
+
+
     # Detail buttons in the sidebar.
     # If this function is not defined, the draw_buttons function is used instead
     def draw_buttons_ext(self, context, layout):
-        column = layout.column(align=True)
+        column = layout.column()
         row = column.row()
         row.prop(self, "my_title_prop", icon='GREASEPENCIL')
 
@@ -241,8 +260,13 @@ class MindmapNode(Node, MindmapTreeNode):
         row.prop_search(self, 'node_image',  bpy.data, 'images')
         row.operator('image.open')
         
-        row = column.row()
-        row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+        col = column.box().column(align=True)
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__name__].preferences       
+        wrap_width = int(self.width / addon_prefs.WrapAmount)
+        text = self.my_string_prop
+        label_multiline(context, text, wrap_width, col)
+        col.prop(self, "my_string_prop", icon='GREASEPENCIL')
 
         row = column.row(align=True)
         row.prop(self, "node_inputs")

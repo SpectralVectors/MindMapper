@@ -65,8 +65,7 @@ class MindmapNodeSocket(NodeSocket):
         
     # Socket color
     def draw_color(self, context, node):
-        return (0.0, 1.0, 0.0, 1)
-
+        return (0.1, 0.3, 0.1, 1)
 
 # Mix-in class for all custom nodes in this tree type.
 # Defines a poll function to enable instantiation.
@@ -192,11 +191,20 @@ class MindmapNode(Node, MindmapTreeNode):
         preferences = context.preferences
         addon_prefs = preferences.addons[__name__].preferences
 
-        text = self.my_string_prop
+        # Get the width and create a text wrapper
         characters = int(self.width / addon_prefs.WrapAmount)
         wrapper = textwrap.TextWrapper(width=characters)
-        text_lines = wrapper.wrap(text=text)
+
+        text = self.my_string_prop
+        lines = text.split("\n")
+        text_lines = []
+
+        # Wrap each line separately
+        for line in lines:
+            text_lines += wrapper.wrap(text=line)
+
         box = layout.box()
+        box = box.column(align=True)
 
         if self.node_image:
             #nodeimage = bpy.path.basename(self.node_image)

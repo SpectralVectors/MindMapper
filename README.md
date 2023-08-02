@@ -3,7 +3,7 @@ Node-based text and image flowchart for Blender
 ![screenshot](/images/MindMapperUpdate.png)
 
 ## What It Is
-This addon gives you a custom Node Editor, as well as an 'Extra' category in the Shader, Geometry and Compositor Node Editors Add Menu.
+This addon gives you an 'Extra' category in the Shader, Geometry and Compositor Node Editors __Add Menu__, as well as a custom Node Editor.
 
 Just click __Add > Extra > Mindmap__ or __Note__ to use the nodes in any node tree.
 

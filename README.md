@@ -21,12 +21,12 @@ Image support comes through Blender's auto-generated thumbnail previews, so imag
 There is not currently support for renaming sockets, importing/exporting text etc.
 
 ## Acknowledgments and Thanks
-Inspired by a request from Tobias on RightClickSelect.
+Inspired by a request from __Tobias__ on RightClickSelect.
 
-Multi-line strings c/o Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ 
+Multi-line strings c/o [Nikita of B3D Interplanety](https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/)
 
-tin2tin contributed to the code, and also integrated it into the Blender Screenwriter addon: https://github.com/tin2tin/Blender_Screenwriter
+__tin2tin__ contributed to the code, and also integrated it into the [Blender Screenwriter addon](https://github.com/tin2tin/Blender_Screenwriter)
 
-Bazza and cannibalox contributed to the code.
+__Bazza__ and __cannibalox__ contributed to the code.
 
 __A massive thanks to everyone who has downloaded, used, and especially contributed to this addon!__

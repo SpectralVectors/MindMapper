@@ -1,5 +1,6 @@
 # MindMapper v0.9.3
 ![A Node-based Text and Image Flowchart for Blender](/images/MindmapperLogo.png)
+
 _(clockwise from top left: Geometry Node Editor, Mindmap Node Editor, Compositor Node Editor, Shader Node Editor)_
 ![screenshot](/images/MindMapperUpdate.png)
 ## What It Is

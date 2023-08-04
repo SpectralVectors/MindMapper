@@ -2,7 +2,7 @@
 ![A Node-based Text and Image Flowchart for Blender](/images/MindmapperLogo.png)
 
 _(clockwise from top left: Geometry Node Editor, Mindmap Node Editor, Compositor Node Editor, Shader Node Editor)_
-![screenshot](/images/MindMapperUpdate.png)
+![screenshot](/images/MindMapper1Update.png)
 ## What It Is
 This addon gives you an 'Extra' category in the Shader, Geometry and Compositor Node Editors __Add Menu__, as well as a custom Node Editor.
 

@@ -1,17 +1,26 @@
-from nodeitems_utils import NodeCategory
-from nodeitems_utils import NodeItem
-from nodeitems_utils import register_node_categories
-from nodeitems_utils import unregister_node_categories
-
+# import bpy
+# import time
+# import os
+from nodeitems_utils import (
+    NodeItem,
+    NodeCategory,
+    register_node_categories,
+    unregister_node_categories
+)
 from . Preferences import MindMapperPreferences
-from . MindmapNodeBase import MindmapTree, MindmapNodeSocket
+from . MindmapNodeBase import (
+    MindmapTree,
+    MindmapNodeSocket,
+    preview_collections
+)
 from . MindmapNode import MindmapNode
 from . NoteNode import NoteNode
+
 
 bl_info = {
     "name": "MindMapper",
     "author": "Spectral Vectors, tin2tin, Bazza, cannibalox",
-    "version": (0, 9, 3),
+    "version": (1, 0, 0),
     "blender": (2, 90, 0),
     "location": "Custom Node Editor, and Shader, Geometry, Compositor Nodes",
     "description": "A multi-line text and image flow chart node",
@@ -66,6 +75,13 @@ classes = (
 
 
 def register():
+    import bpy.utils.previews
+    pcoll = bpy.utils.previews.new()
+    pcoll.node_images_dir = ""
+    pcoll.node_images = ()
+
+    preview_collections["mindmap"] = pcoll
+
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
@@ -74,6 +90,12 @@ def register():
 
 
 def unregister():
+    from bpy.utils import previews
+
+    for pcoll in preview_collections.values():
+        previews.remove(pcoll)
+    preview_collections.clear()
+
     unregister_node_categories('Mindmap')
 
     from bpy.utils import unregister_class

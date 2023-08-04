@@ -1,33 +1,24 @@
-# MindMapper v0.9.3
-![A Node-based Text and Image Flowchart for Blender](/images/MindmapperLogo.png)
+# MindMapper v0.8
+Node-based text and image flowchart for Blender
 
-_(clockwise from top left: Geometry Node Editor, Mindmap Node Editor, Compositor Node Editor, Shader Node Editor)_
-![screenshot](/images/MindMapperUpdate.png)
-## What It Is
-This addon gives you an 'Extra' category in the Shader, Geometry and Compositor Node Editors __Add Menu__, as well as a custom Node Editor.
+Mindmap with shortcuts visible:
+![screenshot](/Mindmap.png)
+Mindmap with shortcuts hidden:
+![screenshot](/MindmapTidy.png)
 
-Just click __Add > Extra > Mindmap__ or __Note__ to use the nodes in any node tree.
+## Notes
+This was requested by Tobias on RightClickSelect, and made possible by a blog post from Nikita: https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/ on how to extend Blender's Panels to display multiline text strings. Thanks also to tin2tin for suggesting some layout improvements!
 
-To create a Mindmapper Node Tree, open the Mindmapper Node Editor, click 'New' to create a new node tree, then, click __Add > Mindmap__. 
+This addon gives you a custom Node Editor (just like the Shader Node Editor, or the Geometry Node Editor), which will appear in the Editor Type menu after install.
 
-You can change the text and the background color of the node, as well as connect it to one or more other nodes to create a flowchart.
+First, click 'New' to create a new node tree, then, click 'Add' > 'Mindmap' to add a new node. You can change the text and the background color of the node, as well as connect it to one or more other nodes to create a flowchart.
 
-## How It Works
 It works by displaying a String Property as multiple Label strings, separated by number of characters.
 
 The complete text will display on the node, but in order to edit it, you must click in the box with the __Pencil Icon__ at the bottom of the node, then you can type or paste any text you like. The top box is for the node label, the next row sets the picture, the next box sets the text for the body of the note, then the last are the controls to add/remove sockets.
 
+Line breaks are not supported, but you can paste complete paragraphs. Since they are being pasted into a small text box, it may be easier to write them in the Text Editor, then paste them in the Node Properties after you've written and edited them.
+
 Image support comes through Blender's auto-generated thumbnail previews, so images are low-res, but load quickly, and require no additional processing.
 
 There is not currently support for renaming sockets, importing/exporting text etc.
-
-## Acknowledgments and Thanks
-Inspired by a request from __Tobias__ on RightClickSelect.
-
-Multi-line strings c/o [Nikita of B3D Interplanety](https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/)
-
-__tin2tin__ contributed to the code, and also integrated it into the [Blender Screenwriter addon](https://github.com/tin2tin/Blender_Screenwriter)
-
-__Bazza__ and __cannibalox__ contributed to the code.
-
-__A massive thanks to everyone who has downloaded, used, and especially contributed to this addon!__

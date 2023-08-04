@@ -1,9 +1,20 @@
 import bpy
+import os
+# import time
 import textwrap
 from bpy.types import Node
 from . MindmapNodeBase import MindmapTreeNode
 from . MindmapNodeBase import label_multiline
 from . MindmapNodeBase import update_nodes
+# from . MindmapNodeBase import preview_collections
+from . MindmapNodeBase import enum_previews_from_directory_items
+from .t3dn_bip import previews
+
+collection = previews.new(max_size=(2048, 2048))
+
+
+def update_preview(self, context):
+    self.node_image = self.node_images
 
 
 # Derived from the Node base type.
@@ -31,7 +42,7 @@ class MindmapNode(Node, MindmapTreeNode):
 
     my_node_color: bpy.props.FloatVectorProperty(
         name='',
-        default=(0, 0, 0.1),
+        default=(0.05, 0.05, 0.3),
         subtype='COLOR',  # noqa: F821
     )
 
@@ -44,14 +55,19 @@ class MindmapNode(Node, MindmapTreeNode):
 
     show_in_single_node: bpy.props.BoolProperty(
         name='Show Shortcuts in Node (single)',
-        default=True,
+        default=False,
     )
 
     node_image: bpy.props.StringProperty(
         name="",
         description="Filename of the Node's image.",
-        default="Render Result",
+        default="SVAvatar.png",  # noqa: F821
         subtype='FILE_NAME'  # noqa: F821
+    )
+
+    node_images: bpy.props.EnumProperty(
+        items=enum_previews_from_directory_items,
+        update=update_preview
     )
 
     node_inputs: bpy.props.IntProperty(
@@ -127,30 +143,37 @@ class MindmapNode(Node, MindmapTreeNode):
         box = layout.box()
         box = box.column(align=True)
 
-        if self.node_image:
-            preview = bpy.data.images[self.node_image].preview
-            icon = preview.icon_id
-            box.template_icon(
-                icon_value=icon,
-                scale=self.width / (addon_prefs.WrapAmount * 4)
-            )
+        folder = addon_prefs.node_images_dir
+        filepath = os.path.join(folder, self.node_image)
+        name = bpy.path.basename(filepath)
+        preview = collection.load_safe(name, filepath, 'IMAGE')
+        icon_id = preview.icon_id
+        box.template_icon(
+            icon_value=icon_id,
+            scale=self.width / (addon_prefs.WrapAmount * 4)
+        )
 
         for text_line in text_lines:
             box.label(text=text_line)
 
         if addon_prefs.ShowInNode:
             column = layout.column(align=True)
-            row = column.row(align=True)
             icon = 'TRIA_DOWN' if self.show_in_single_node else 'TRIA_RIGHT'
-            row.prop(self, 'show_in_single_node', icon=icon, icon_only=True)
+            column.prop(self, 'show_in_single_node', icon=icon, text='')
 
             if self.show_in_single_node:
+                row = column.row(align=True)
                 row.prop(self, "my_title_prop", icon='GREASEPENCIL')
+                row.label(icon='MATERIAL')
                 row.prop(self, "color", text='', icon='MATERIAL')
 
                 column = column.column(align=True)
-                column.prop_search(self, 'node_image', bpy.data, 'images')
-                column.operator('image.open', text='Open Image')
+                column.template_icon_view(
+                    self,
+                    "node_images",
+                    scale=4
+                )
+                column.prop(addon_prefs, "node_images_dir")
 
                 row = column.row(align=True)
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
@@ -165,10 +188,6 @@ class MindmapNode(Node, MindmapTreeNode):
         column = layout.column()
         row = column.row()
         row.prop(self, "my_title_prop", icon='GREASEPENCIL')
-
-        row = column.row(align=True)
-        row.prop_search(self, 'node_image', bpy.data, 'images')
-        row.operator('image.open')
 
         col = column.box().column(align=True)
         preferences = context.preferences
@@ -190,8 +209,8 @@ class MindmapNode(Node, MindmapTreeNode):
         return self.my_title_prop
 
     def update(self):
-        if self.node_image:
-            bpy.data.images[self.node_image].use_fake_user = True
+        # if self.node_image:
+        #     bpy.data.images[self.node_image].use_fake_user = True
 
         if not len(self.inputs) == self.node_inputs:
             for input in self.inputs:

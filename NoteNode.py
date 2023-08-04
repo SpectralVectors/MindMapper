@@ -87,15 +87,16 @@ class NoteNode(Node, MindmapTreeNode):
         for text_line in text_lines:
             box.label(text=text_line)
 
-        row = layout.row(align=True)
+        column = layout.column(align=True)
         icon = 'TRIA_DOWN' if self.show_in_single_node else 'TRIA_RIGHT'
-        row.prop(self, 'show_in_single_node', icon=icon, icon_only=True)
+        column.prop(self, 'show_in_single_node', icon=icon, icon_only=True)
 
         if self.show_in_single_node:
+            row = column.row(align=True)
             row.prop(self, "my_title_prop", icon='GREASEPENCIL')
             row.prop(self, "color", text='', icon='MATERIAL')
 
-            row = layout.row(align=True)
+            row = column.row(align=True)
             row.prop(self, "my_string_prop", icon='GREASEPENCIL')
 
     # Detail buttons in the sidebar.

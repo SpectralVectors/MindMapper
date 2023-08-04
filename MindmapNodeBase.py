@@ -1,4 +1,5 @@
 import bpy
+import os
 import textwrap
 from bpy.types import NodeTree
 from bpy.types import NodeSocket
@@ -52,7 +53,8 @@ def update_nodes(self, context):
     reroute = nodes.new(type="NodeReroute")
     links = node_tree.links
     links.new(node.outputs[0], reroute.inputs[0])
-    node.select = False
+    bpy.ops.node.select_all(action='DESELECT')
+    reroute.select = True
     bpy.ops.node.delete()
 
 
@@ -67,3 +69,46 @@ def label_multiline(context, text, wrap_width, parent):
         wrap_line for line in split for wrap_line in wrapper.wrap(text=line)
     ]
     [parent.label(text=text_line) for text_line in text_lines]
+
+
+def enum_previews_from_directory_items(self, context):
+    """EnumProperty callback"""
+    enum_items = []
+
+    if context is None:
+        return enum_items
+
+    preferences = context.preferences
+    addon_prefs = preferences.addons[__package__].preferences
+    directory = addon_prefs.node_images_dir
+    # Get the preview collection (defined in register func).
+    pcoll = preview_collections["mindmap"]
+
+    if directory == pcoll.node_images_dir:
+        return pcoll.node_images
+
+    print("Scanning directory: %s" % directory)
+
+    if directory and os.path.exists(directory):
+        # Scan the directory for png files
+        image_paths = []
+        for fn in os.listdir(directory):
+            if fn.lower().endswith(".png"):
+                image_paths.append(fn)
+
+        for i, name in enumerate(image_paths):
+            # generates a thumbnail preview for a file.
+            filepath = os.path.join(directory, name)
+            icon = pcoll.get(name)
+            if not icon:
+                thumb = pcoll.load(name, filepath, 'IMAGE')
+            else:
+                thumb = pcoll[name]
+            enum_items.append((name, name, "", thumb.icon_id, i))
+
+    pcoll.node_images = enum_items
+    pcoll.node_images_dir = directory
+    return pcoll.node_images
+
+
+preview_collections = {}

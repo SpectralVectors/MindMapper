@@ -28,6 +28,11 @@ class NoteNode(Node, MindmapTreeNode):
         default='Note'  # noqa: F821
     )
 
+    text_file: bpy.props.StringProperty(
+        name='',
+        description="Text file to show in node"
+    )
+
     my_node_color: bpy.props.FloatVectorProperty(
         name='',
         default=(0.6, 0.6, 0),
@@ -73,13 +78,17 @@ class NoteNode(Node, MindmapTreeNode):
         characters = int(self.width / addon_prefs.WrapAmount)
         wrapper = textwrap.TextWrapper(width=characters)
 
-        text = self.my_string_prop
-        lines = text.split("\n")
-        text_lines = []
+        if not self.text_file:
+            text = self.my_string_prop
+            lines = text.split("\n")
+            text_lines = []
 
-        # Wrap each line separately
-        for line in lines:
-            text_lines += wrapper.wrap(text=line)
+            # Wrap each line separately
+            for line in lines:
+                text_lines += wrapper.wrap(text=line)
+        else:
+            text = bpy.data.texts[self.text_file]
+            text_lines = [line.body for line in text.lines]
 
         box = layout.box()
         box = box.column(align=True)
@@ -98,6 +107,15 @@ class NoteNode(Node, MindmapTreeNode):
 
             row = column.row(align=True)
             row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+            row = column.row(align=True)
+            row.prop_search(
+                self,
+                'text_file',
+                bpy.data,
+                'texts',
+                text='',
+                icon='TEXT'
+            )
 
     # Detail buttons in the sidebar.
     # If function is not defined, the draw_buttons function is used instead
@@ -113,6 +131,14 @@ class NoteNode(Node, MindmapTreeNode):
         text = self.my_string_prop
         label_multiline(context, text, wrap_width, col)
         col.prop(self, "my_string_prop", icon='GREASEPENCIL')
+        col.prop_search(
+            self,
+            'text_file',
+            bpy.data,
+            'texts',
+            text='',
+            icon='TEXT'
+        )
 
     # Optional: custom label
     # Explicit user label overrides, but here we can define a label dynamically

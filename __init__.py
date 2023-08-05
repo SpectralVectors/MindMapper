@@ -20,7 +20,7 @@ from . NoteNode import NoteNode
 bl_info = {
     "name": "MindMapper",
     "author": "Spectral Vectors, tin2tin, Bazza, cannibalox",
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (2, 90, 0),
     "location": "Custom Node Editor, and Shader, Geometry, Compositor Nodes",
     "description": "A multi-line text and image flow chart node",
@@ -75,8 +75,8 @@ classes = (
 
 
 def register():
-    import bpy.utils.previews
-    pcoll = bpy.utils.previews.new()
+    from bpy.utils import previews
+    pcoll = previews.new()
     pcoll.node_images_dir = ""
     pcoll.node_images = ()
 

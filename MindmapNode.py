@@ -40,6 +40,11 @@ class MindmapNode(Node, MindmapTreeNode):
         default='Mindmap'  # noqa: F821
     )
 
+    text_file: bpy.props.StringProperty(
+        name='',
+        description="Text file to show in node"
+    )
+
     my_node_color: bpy.props.FloatVectorProperty(
         name='',
         default=(0.05, 0.05, 0.3),
@@ -132,13 +137,17 @@ class MindmapNode(Node, MindmapTreeNode):
         characters = int(self.width / addon_prefs.WrapAmount)
         wrapper = textwrap.TextWrapper(width=characters)
 
-        text = self.my_string_prop
-        lines = text.split("\n")
-        text_lines = []
+        if not self.text_file:
+            text = self.my_string_prop
+            lines = text.split("\n")
+            text_lines = []
 
-        # Wrap each line separately
-        for line in lines:
-            text_lines += wrapper.wrap(text=line)
+            # Wrap each line separately
+            for line in lines:
+                text_lines += wrapper.wrap(text=line)
+        else:
+            text = bpy.data.texts[self.text_file]
+            text_lines = [line.body for line in text.lines]
 
         box = layout.box()
         box = box.column(align=True)
@@ -177,6 +186,15 @@ class MindmapNode(Node, MindmapTreeNode):
 
                 row = column.row(align=True)
                 row.prop(self, "my_string_prop", icon='GREASEPENCIL')
+                row = column.row(align=True)
+                row.prop_search(
+                    self,
+                    'text_file',
+                    bpy.data,
+                    'texts',
+                    text='',
+                    icon='TEXT'
+                )
 
                 row = column.row(align=True)
                 row.prop(self, "node_inputs")
@@ -196,6 +214,14 @@ class MindmapNode(Node, MindmapTreeNode):
         text = self.my_string_prop
         label_multiline(context, text, wrap_width, col)
         col.prop(self, "my_string_prop", icon='GREASEPENCIL')
+        col.prop_search(
+            self,
+            'text_file',
+            bpy.data,
+            'texts',
+            text='',
+            icon='TEXT'
+        )
 
         row = column.row(align=True)
         row.prop(self, "node_inputs")

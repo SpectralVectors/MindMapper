@@ -44,4 +44,6 @@ __Bazza__ and __cannibalox__ contributed to the code.
 
 __bonjorno7__ contributed the [3dn-bip library](https://github.com/bonjorno7/3dn-bip) which supports Hi-res images!
 
+__BUGProtectionAssociation__ suggested loading internal text data, and offered examples by __ly29__ and __Dejhon Huang__ which helped implement it!
+
 __A massive thanks to everyone who has downloaded, used, and especially contributed to this addon!__

@@ -52,7 +52,8 @@ def update_nodes(self, context):
     nodes = node_tree.nodes
     reroute = nodes.new(type="NodeReroute")
     links = node_tree.links
-    links.new(node.outputs[0], reroute.inputs[0])
+    output = (int(len(node.outputs)) - 1)
+    links.new(node.outputs[output], reroute.inputs[0])
     bpy.ops.node.select_all(action='DESELECT')
     reroute.select = True
     bpy.ops.node.delete()

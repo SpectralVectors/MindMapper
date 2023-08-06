@@ -139,7 +139,7 @@ class MindmapNode(Node, MindmapTreeNode):
 
         if not self.text_file:
             text = self.my_string_prop
-            lines = text.split("\n")
+            lines = text.split("\\n")
             text_lines = []
 
             # Wrap each line separately

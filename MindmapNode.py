@@ -1,12 +1,10 @@
 import bpy
 import os
-# import time
 import textwrap
 from bpy.types import Node
 from . MindmapNodeBase import MindmapTreeNode
 from . MindmapNodeBase import label_multiline
 from . MindmapNodeBase import update_nodes
-# from . MindmapNodeBase import preview_collections
 from . MindmapNodeBase import enum_previews_from_directory_items
 from .t3dn_bip import previews
 

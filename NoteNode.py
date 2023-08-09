@@ -57,9 +57,6 @@ class NoteNode(Node, MindmapTreeNode):
         self.use_custom_color = True
         self.color = self.my_node_color
         self.width = 250
-        j = self.outputs.new('MindmapNodeSocketType', name='>')
-        j.display_shape = 'SQUARE_DOT'
-        j.link_limit = 0
 
     # Copy function to initialize a copied node from an existing one.
     def copy(self, node):

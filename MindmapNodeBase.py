@@ -94,8 +94,17 @@ def enum_previews_from_directory_items(self, context):
         # Scan the directory for png files
         image_paths = []
         for fn in os.listdir(directory):
-            if fn.lower().endswith(".png"):
-                image_paths.append(fn)
+            formats = [
+                ".png",
+                ".jpg",
+                ".jpeg",
+                ".bmp",
+                ".tiff",
+                ".webp"
+            ]
+            for form in formats:
+                if fn.lower().endswith(form):
+                    image_paths.append(fn)
 
         for i, name in enumerate(image_paths):
             # generates a thumbnail preview for a file.

@@ -5,6 +5,19 @@ import os
 class MindMapperPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    image_resolution = bpy.props.EnumProperty(
+        items=(
+            ('256', '256', '256 x 256'),
+            ('512', '512', '512 x 512'),
+            ('1K', '1K', '1024 x 1024'),
+            ('2K', '2K', '2048 x 2048'),
+            ('4K', '4K', '4096 x 4096')
+        ),
+        name='Image Resolution',
+        description='Resolution of the main node image',
+        default='1K',
+    )
+
     image_folder = os.path.join(os.path.dirname(__file__), "images")
 
     node_images_dir: bpy.props.StringProperty(

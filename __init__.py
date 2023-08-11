@@ -23,7 +23,7 @@ from . SoundNode import SoundNode
 bl_info = {
     "name": "MindMapper",
     "author": "Spectral Vectors, tin2tin, Bazza, cannibalox",
-    "version": (1, 4, 1),
+    "version": (1, 4, 2),
     "blender": (2, 90, 0),
     "location": "Custom Node Editor, and Shader, Geometry, Compositor Nodes",
     "description": "A multi-line text and image flow chart node",

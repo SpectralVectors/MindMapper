@@ -5,12 +5,16 @@ from . MindmapNodeBase import MindmapTreeNode
 
 
 def play_status(self, context):
-    device = aud.Device()
-    sound = aud.Sound(self.sound)
+    device = aud.Device()  # noqa
+    sound = aud.Sound(self.sound)  # noqa
+    name = str(self.name).replace('.', '')
     if self.playing:
-        device.play(sound)
+        exec(f"bpy.types.Scene.{name}_handle = device.play(sound)")
     else:
-        device.stopAll()
+        exec(f"context.scene.{name}_handle.stop()")
+        exec(f"del bpy.types.Scene.{name}_handle")
+    # else:
+    #     device.stopAll()
 
 
 # Sound Node
@@ -94,4 +98,4 @@ class SoundNode(Node, MindmapTreeNode):
         return self.my_title_prop
 
     def update(self):
-        self.my_string_prop = self.my_string_prop
+        self.my_title_prop = self.my_title_prop

@@ -17,12 +17,13 @@ from . MindmapNode import MindmapNode
 from . NoteNode import NoteNode
 from . ChecklistNode import ChecklistNode
 from . NumberlistNode import NumberlistNode
+from . SoundNode import SoundNode
 
 
 bl_info = {
     "name": "MindMapper",
     "author": "Spectral Vectors, tin2tin, Bazza, cannibalox",
-    "version": (1, 3, 1),
+    "version": (1, 4, 1),
     "blender": (2, 90, 0),
     "location": "Custom Node Editor, and Shader, Geometry, Compositor Nodes",
     "description": "A multi-line text and image flow chart node",
@@ -60,7 +61,8 @@ node_categories = [
         NodeItem("MindmapNodeType"),
         NodeItem("NoteNodeType"),
         NodeItem("ChecklistNodeType"),
-        NodeItem("NumberlistNodeType")
+        NodeItem("NumberlistNodeType"),
+        NodeItem("SoundNodeType")
     ]),
     # This is to add the Layout nodes to the Mindmapper Node Editor
     LayoutCategory('LAYOUT', "Layout", items=[
@@ -76,7 +78,8 @@ classes = (
     MindmapNodeSocket,
     NoteNode,
     ChecklistNode,
-    NumberlistNode
+    NumberlistNode,
+    SoundNode
 )
 
 

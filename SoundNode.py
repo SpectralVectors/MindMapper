@@ -4,15 +4,27 @@ from bpy.types import Node
 from . MindmapNodeBase import MindmapTreeNode
 
 
+def set_loop(self, context):
+    if self.playing:
+        if self.loop:
+            exec(f"bpy.types.Scene.{self.node_name}_handle.loop_count = -1")
+        else:
+            exec(f"bpy.types.Scene.{self.node_name}_handle.loop_count = 0")
+
+
+def volume_change(self, context):
+    if self.playing:
+        exec(f"bpy.types.Scene.{self.node_name}_handle.volume = {self.volume}")
+
+
 def play_status(self, context):
     device = aud.Device()  # noqa
     sound = aud.Sound(self.sound)  # noqa
-    name = str(self.name).replace('.', '')
     if self.playing:
-        exec(f"bpy.types.Scene.{name}_handle = device.play(sound)")
+        exec(f"bpy.types.Scene.{self.node_name}_handle = device.play(sound)")
     else:
-        exec(f"context.scene.{name}_handle.stop()")
-        exec(f"del bpy.types.Scene.{name}_handle")
+        exec(f"context.scene.{self.node_name}_handle.stop()")
+        exec(f"del bpy.types.Scene.{self.node_name}_handle")
     # else:
     #     device.stopAll()
 
@@ -58,12 +70,29 @@ class SoundNode(Node, MindmapTreeNode):
         update=play_status
     )
 
+    volume: bpy.props.FloatProperty(
+        name='',
+        default=1.0,
+        min=0.0,
+        max=1.0,
+        update=volume_change
+    )
+
+    loop: bpy.props.BoolProperty(
+        name='',
+        default=False,
+        update=set_loop
+    )
+
+    node_name = ''
+
     # === Optional Functions ===
     # Initialization function, called when a new node is created.
     def init(self, context):
         self.use_custom_color = True
         self.color = self.my_node_color
         self.width = 250
+        self.node_name = str(self.name).replace('.', '')
 
     # Copy function to initialize a copied node from an existing one.
     def copy(self, node):
@@ -83,6 +112,17 @@ class SoundNode(Node, MindmapTreeNode):
                 self,
                 'playing',
                 icon='PLAY' if not self.playing else 'SNAP_FACE'
+            )
+            split = box.split(factor=0.33, align=True)
+            split.label(
+                text='Volume',
+                icon='MUTE_IPO_OFF' if not self.volume else 'MUTE_IPO_ON')
+            split.prop(self, 'volume')
+            box.prop(
+                self,
+                'loop',
+                text='One Shot' if not self.loop else 'Loop',
+                icon='FORWARD' if not self.loop else 'FILE_REFRESH'
             )
 
     # Detail buttons in the sidebar.

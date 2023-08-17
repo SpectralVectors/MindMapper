@@ -5,31 +5,34 @@ from . MindmapNodeBase import MindmapTreeNode
 
 
 def draw_callback_px(self, context):
-    node = context.space_data.node_tree.nodes[self.node_name]
-    font_id = node.my_font
-    text_size = node.my_text_size
-    position = node.location
-    big_text = node.my_title_prop
-    color = node.my_node_color
-    shadow = node.shadow_color
+    if context.space_data is not None:
+        if context.space_data.type == 'NODE_EDITOR':
+            if context.space_data.node_tree is not None:
+                node = context.space_data.node_tree.nodes[self.node_name]
+                font_id = node.my_font
+                text_size = node.my_text_size
+                position = node.location
+                big_text = node.my_title_prop
+                color = node.my_node_color
+                shadow = node.shadow_color
 
-    blf.size(font_id, text_size)
-    dimensions = blf.dimensions(font_id, big_text)
-    blf.color(font_id, *color, 1)
-    blf.enable(font_id, blf.SHADOW)
-    blf.shadow(font_id, 3, *shadow)
-    blf.shadow_offset(font_id, 3, -3)
-    for region in context.area.regions:
-        if region.type == 'WINDOW':
-            draw_position = region.view2d.view_to_region(*position)
-    blf.position(
-        font_id,
-        ((draw_position[0] + (node.width))),
-        ((draw_position[1] - (dimensions[1] / 2))),
-        0
-    )
-    blf.draw(font_id, big_text)
-    blf.disable(font_id, blf.SHADOW)
+                blf.size(font_id, text_size)
+                dimensions = blf.dimensions(font_id, big_text)
+                blf.color(font_id, *color, 1)
+                blf.enable(font_id, blf.SHADOW)
+                blf.shadow(font_id, 3, *shadow)
+                blf.shadow_offset(font_id, 3, -3)
+                for region in context.area.regions:
+                    if region.type == 'WINDOW':
+                        draw_position = region.view2d.view_to_region(*position)
+                blf.position(
+                    font_id,
+                    ((draw_position[0] + (node.width))),
+                    ((draw_position[1] - (dimensions[1] / 2))),
+                    0
+                )
+                blf.draw(font_id, big_text)
+                blf.disable(font_id, blf.SHADOW)
 
 
 # BigText Node
@@ -140,8 +143,12 @@ class DrawBigTextOperator(bpy.types.Operator):
     draw_text: bpy.props.StringProperty()
 
     def modal(self, context, event):
-        context.area.tag_redraw()
-        return {'PASS_THROUGH'}  # do not block execution
+        if context.space_data is not None:
+            if context.space_data.type == 'NODE_EDITOR':
+                context.area.tag_redraw()
+                return {'PASS_THROUGH'}  # do not block execution
+        else:
+            return {'PASS_THROUGH'}
 
     def invoke(self, context, event):
         if context.space_data.type == 'NODE_EDITOR':
@@ -153,5 +160,8 @@ class DrawBigTextOperator(bpy.types.Operator):
             )
             context.window_manager.modal_handler_add(self)
             return {'RUNNING_MODAL'}
+        elif self._handle:
+            context.space_data.draw_handler_remove(self._handle, 'WINDOW')
+            return {'FINISHED'}
         else:
             return {'CANCELLED'}

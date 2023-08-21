@@ -19,8 +19,6 @@ def draw_callback_px(self, context):
                 color = node.my_node_color
                 shadow = node.shadow_color
 
-                blf.size(font_id, text_size)
-                dimensions = blf.dimensions(font_id, big_text)
                 blf.color(font_id, *color, 1)
                 blf.enable(font_id, blf.SHADOW)
                 blf.shadow(font_id, 3, *shadow)
@@ -29,12 +27,26 @@ def draw_callback_px(self, context):
                     if region.type == 'WINDOW':
                         view = region.view2d
                         draw_position = view.view_to_region(*position)
+
+                        x1, y1 = view.region_to_view(0, 0)
+                        x2, y2, = view.region_to_view(
+                            region.width,
+                            region.height
+                        )
+
+                        view_width = x2 - x1
+                        view_height = y2 - y1
+
+                        scale_x = region.width / view_width
+                        scale_y = region.height / view_height
+
                 blf.position(
                     font_id,
-                    ((draw_position[0] + (node.width))),
-                    ((draw_position[1] - (dimensions[1] / 2))),
+                    (draw_position[0] + (node.width * scale_x)),
+                    (draw_position[1] - ((node.height / 4) * scale_y)),
                     0
                 )
+                blf.size(font_id, text_size * scale_x)
                 blf.draw(font_id, big_text)
                 blf.disable(font_id, blf.SHADOW)
 
@@ -160,7 +172,7 @@ class DrawBigTextOperator(bpy.types.Operator):
                 draw_callback_px,
                 (self, context),
                 'WINDOW',
-                'BACKDROP'  # or POST_PIXEL
+                'POST_PIXEL'  # BACKDROP or POST_PIXEL
             )
             context.window_manager.modal_handler_add(self)
             return {'RUNNING_MODAL'}

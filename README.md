@@ -1,4 +1,4 @@
-# MindMapper v1.1.0
+# MindMapper v1.6.0
 ![A Node-based Text and Image Flowchart for Blender](/images/MindmapperLogo.png)
 
 _(clockwise from top left: Geometry Node Editor, Mindmap Node Editor, Compositor Node Editor, Shader Node Editor)_
@@ -39,6 +39,8 @@ Inspired by a request from __Tobias__ on RightClickSelect.
 Multi-line strings c/o [Nikita of B3D Interplanety](https://b3d.interplanety.org/en/multiline-text-in-blender-interface-panels/)
 
 __tin2tin__ contributed to the code, and also integrated it into the [Blender Screenwriter addon](https://github.com/tin2tin/Blender_Screenwriter)
+
+__iceythe (Kaio)__ contributed a scaling fix for the BigText and BigPic nodes.
 
 __Bazza__ and __cannibalox__ contributed to the code.
 

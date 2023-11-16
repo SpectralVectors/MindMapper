@@ -26,7 +26,7 @@ from . BigPicNode import DrawBigPicOperator
 bl_info = {
     "name": "MindMapper",
     "author": "Spectral Vectors, tin2tin, Bazza, cannibalox",
-    "version": (1, 6, 0),
+    "version": (1, 7, 0),
     "blender": (2, 90, 0),
     "location": "Custom Node Editor, and Shader, Geometry, Compositor Nodes",
     "description": "A multi-line text and image flow chart node",

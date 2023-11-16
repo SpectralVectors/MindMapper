@@ -44,7 +44,11 @@ def draw_callback_px(self, context):
                 x = draw_position[0] + (node.width * scale_x)
                 y = draw_position[1] - height
 
-                shader = gpu.shader.from_builtin('2D_IMAGE')
+                try:
+                    shader = gpu.shader.from_builtin('IMAGE')
+                except NameError:
+                    shader = gpu.shader.from_builtin('2D_IMAGE')
+
                 batch = batch_for_shader(
                     shader, 'TRI_FAN',
                     {
